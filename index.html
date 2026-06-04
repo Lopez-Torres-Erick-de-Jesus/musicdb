@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HFI Music Player | Reproductor de Alta Fidelidad</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="#" type="image/x-icon">
+</head>
+<body>
+
+<!-- Navegacion fija -->
+<nav class="main-nav">
+    <div class="nav-logo">
+        <div class="nav-logo-icon">♫</div>
+        <span class="nav-logo-text">HFI Music</span>
+    </div>
+    <div class="nav-links">
+        <a href="index.html" class="nav-link active">Reproductor</a>
+        <a href="about.html" class="nav-link">Acerca del Proyecto</a>
+        <button class="github-btn" onclick="window.open('https://github.com/torreshernandezdavidm3s2-star/Streaming-Playlist-Manager-music-video-.?hl=es-US://github.com/tuusuario/hfi-music-player', '_blank')">GitHub</button>
+    </div>
+    <div class="theme-switch-wrapper">
+        <span class="theme-icon-dark">🌙</span>
+        <label class="theme-switch">
+            <input type="checkbox" id="theme-toggle">
+            <span class="slider round"></span>
+        </label>
+        <span class="theme-icon-light">☀️</span>
+    </div>
+</nav>
+
+<div class="app-container">
+    <!-- Barra superior -->
+    <div class="topbar">
+        <button class="btn-primary" onclick="cargarCarpeta()">Cargar musica</button>
+        <button class="btn-secondary" onclick="crearPlaylistPrompt()">Nueva Playlist</button>
+        <div class="search-wrapper">
+            <input type="text" id="buscador" placeholder="Buscar cancion o album..." oninput="buscarTrack()">
+            <span id="search-count" class="search-count">0 canciones</span>
+        </div>
+        <button class="btn-secondary" onclick="document.getElementById('import-m3u').click()">Importar M3U</button>
+        <button class="btn-secondary" id="export-btn" onclick="exportarPlaylist()">Exportar M3U</button>
+        <input type="file" id="import-m3u" style="display:none" accept=".m3u" onchange="importarM3U(event)">
+    </div>
+
+    <!-- Layout principal -->
+    <div class="main-layout">
+        <!-- Panel de playlists -->
+        <div class="playlists-panel">
+            <div class="panel-header">
+                <h3>Playlists</h3>
+                <button class="icon-btn" onclick="crearPlaylistPrompt()" title="Nueva playlist">+</button>
+            </div>
+            <div id="playlists-container" class="playlists-list">
+                <div class="empty-state">Carga musica para empezar</div>
+            </div>
+        </div>
+
+        <!-- Panel de canciones -->
+        <div class="tracks-panel">
+            <div class="panel-header">
+                <h3>Biblioteca</h3>
+                <div class="track-stats" id="track-stats"></div>
+            </div>
+            <div id="tracks-container" class="tracks-list">
+                <div class="empty-state-large">
+                    <div class="empty-icon">♪</div>
+                    <p>Carga una carpeta con musica para comenzar</p>
+                    <button class="btn-primary" onclick="cargarCarpeta()">Seleccionar carpeta</button>
+                </div>
+            </div>
+            <button class="btn-back" onclick="volverBiblioteca()">← Volver a Biblioteca</button>
+        </div>
+    </div>
+</div>
+
+<!-- Reproductor inferior -->
+<div class="player-bar">
+    <div class="progress-container" onclick="seek(event)">
+        <div id="progress-fill" class="progress-fill"></div>
+    </div>
+
+    <div class="player-controls">
+        <div class="player-info">
+            <div id="player-artwork" class="player-artwork"></div>
+            <div class="player-meta">
+                <div id="current-song-title" class="player-title">Ninguna cancion</div>
+                <div id="time-display" class="player-time">0:00 / 0:00</div>
+            </div>
+        </div>
+
+        <div class="player-buttons">
+    <button class="control-btn" onclick="saltar(-1)" title="Anterior">⏮</button>
+    <button id="main-play-btn" class="control-btn play-btn" onclick="togglePlay()">▶</button>
+    <button class="control-btn" onclick="saltar(1)" title="Siguiente">⏭</button>
+    <div class="divider"></div>
+    <button id="shuffle-btn" class="control-btn mode-btn" onclick="toggleShuffle()" title="Aleatorio">SHF</button>
+    <button id="repeat-btn" class="control-btn mode-btn" onclick="toggleRepeat()" title="Repetir">RPT</button>
+    <button class="control-btn mode-btn" onclick="guardarSesionManual()" title="Guardar posicion">SAVE</button>
+    <div class="divider"></div>
+    <button class="control-btn mode-btn" onclick="retroceder10()" title="Retroceder 10s">-10</button>
+    <button class="control-btn mode-btn" onclick="adelantar10()" title="Adelantar 10s">+10</button>
+</div>
+
+
+        <div class="player-volume">
+            <span class="volume-icon">VOL</span>
+            <input type="range" id="volume-slider" class="volume-slider" min="0" max="1" step="0.01" value="1" oninput="ajustarVolumen(this.value)">
+        </div>
+    </div>
+</div>
+
+<div id="current-view-toast" class="view-toast"></div>
+<div class="session-badge" id="session-indicator">Auto-guardado activo</div>
+
+<script src="scanner.js"></script>
+<script src="app.js"></script>
+<script src="theme.js"></script>
+</body>
+</html>

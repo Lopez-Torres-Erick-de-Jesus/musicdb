@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HFI Music Player | Acerca del Proyecto</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Navegacion fija -->
+<nav class="main-nav">
+    <div class="nav-logo">
+        <div class="nav-logo-icon">♫</div>
+        <span class="nav-logo-text">HFI Music</span>
+    </div>
+    <div class="nav-links">
+        <a href="index.html" class="nav-link">Reproductor</a>
+        <a href="about.html" class="nav-link active">Acerca del Proyecto</a>
+        <button class="github-btn" onclick="window.open('https://github.com/tuusuario/hfi-music-player', '_blank')">GitHub</button>
+    </div>
+    <div class="theme-switch-wrapper">
+        <span class="theme-icon-dark">🌙</span>
+        <label class="theme-switch">
+            <input type="checkbox" id="theme-toggle">
+            <span class="slider round"></span>
+        </label>
+        <span class="theme-icon-light">☀️</span>
+    </div>
+</nav>
+
+<!-- Contenido principal -->
+<div class="about-container">
+    <div class="about-hero">
+        <div class="about-icon">♫</div>
+        <h1>HFI Music Player</h1>
+        <p class="about-tagline">Reproductor de audio profesional para la web</p>
+    </div>
+
+    <div class="about-grid">
+        <!-- Tarjeta: Descripcion -->
+        <div class="about-card">
+            <h3>Descripcion</h3>
+            <p>HFI Music Player es un reproductor de audio web que permite cargar musica desde carpetas LOCALES, crear playlists personalizadas, importar/exportar listas M3U, y disfrutar de una experiencia de alta calidad con soporte para multiples formatos.</p>
+        </div>
+
+        <!-- Tarjeta: Formatos soportados -->
+        <div class="about-card">
+            <h3>Formatos Soportados</h3>
+            <div class="format-badges">
+                <span class="badge">MP3</span>
+                <span class="badge">FLAC</span>
+                <span class="badge">WAV</span>
+                <span class="badge">M4A</span>
+                <span class="badge">OGG</span>
+            </div>
+            <p style="margin-top: 12px;">Soporte especial para FLAC problematicos mediante fallback a Web Audio API.</p>
+        </div>
+
+        <!-- Tarjeta: Compatibilidad -->
+        <div class="about-card">
+            <h3>Compatibilidad</h3>
+            <div class="compatibility-list">
+                <div class="compat-item">
+                    <span class="compat-os">Linux</span>
+                    <span class="compat-status">100% compatible</span>
+                    <span class="compat-browser">Chrome, Edge</span>
+                </div>
+                <div class="compat-item">
+                    <span class="compat-os">Windows 10</span>
+                    <span class="compat-status">100% compatible</span>
+                    <span class="compat-browser">Chrome, Edge</span>
+                </div>
+                <div class="compat-item">
+                    <span class="compat-os">Windows 11</span>
+                    <span class="compat-status">100% compatible</span>
+                    <span class="compat-browser">Chrome, Edge</span>
+                </div>
+            </div>
+            <p style="margin-top: 12px; font-size: 12px; color: var(--text-muted);">Requiere navegador con soporte para File System Access API</p>
+        </div>
+
+        <!-- Tarjeta: Funciones -->
+        <div class="about-card">
+            <h3>Funciones Principales</h3>
+            <ul class="feature-list">
+                <li>Carga de carpetas locales con escaneo recursivo</li>
+                <li>Reproduccion con barra de progreso interactiva</li>
+                <li>Modo aleatorio (Shuffle)</li>
+                <li>Modo repeticion (Repeat)</li>
+                <li>Guardado automatico de sesion</li>
+                <li>Importacion/Exportacion de playlists M3U</li>
+                <li>Busqueda por titulo o album</li>
+                <li>Persistencia de volumen</li>
+                <li>Modo claro / Modo oscuro</li>
+            </ul>
+        </div>
+
+        <!-- Tarjeta: Tecnologias -->
+        <div class="about-card">
+            <h3>Tecnologias</h3>
+            <ul class="tech-list">
+                <li>HTML5 / CSS3 / JavaScript Vanilla</li>
+                <li>Web Audio API (fallback FLAC)</li>
+                <li>File System Access API</li>
+                <li>MediaSession API</li>
+                <li>LocalStorage</li>
+            </ul>
+        </div>
+
+        <!-- Tarjeta: Guia de uso -->
+        <div class="about-card about-card-full">
+            <h3>Guia de uso</h3>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-num">1</div>
+                    <div class="step-text">Haz clic en "Cargar musica" y selecciona una carpeta con archivos de audio</div>
+                </div>
+                <div class="step">
+                    <div class="step-num">2</div>
+                    <div class="step-text">Las canciones apareceran en la biblioteca. Haz clic en cualquier cancion para reproducirla</div>
+                </div>
+                <div class="step">
+                    <div class="step-num">3</div>
+                    <div class="step-text">Crea playlists desde el panel izquierdo y anade canciones usando el boton "+"</div>
+                </div>
+                <div class="step">
+                    <div class="step-num">4</div>
+                    <div class="step-text">Usa SHF para reproduccion aleatoria y RPT para repetir la playlist</div>
+                </div>
+                <div class="step">
+                    <div class="step-num">5</div>
+                    <div class="step-text">Importa archivos .m3u para crear playlists automaticamente</div>
+                </div>
+                <div class="step">
+                    <div class="step-num">6</div>
+                    <div class="step-text">La sesion se guarda automaticamente cada 15 segundos</div>
+                </div>
+                <div class="step">
+                    <div class="step-num">7</div>
+                    <div class="step-text">Usa el switch en la esquina superior derecha para cambiar entre modo claro y oscuro</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tarjeta: Atajos de teclado -->
+        <div class="about-card">
+            <h3>Atajos de teclado</h3>
+            <table class="shortcuts">
+                <tr><td>Espacio</td><td>Reproducir / Pausar</td></tr>
+                <tr><td>←</td><td>Cancion anterior</td></tr>
+                <tr><td>→</td><td>Siguiente cancion</td></tr>
+                <tr><td>↑</td><td>Subir volumen</td></tr>
+                <tr><td>↓</td><td>Bajar volumen</td></tr>
+            </table>
+        </div>
+
+        <!-- Tarjeta: Creditos -->
+        <div class="about-card">
+            <h3>Creditos</h3>
+            <p>Desarrollado como proyecto de alta fidelidad para audio digital.</p>
+            <p style="margin-top: 8px; font-size: 12px; color: var(--text-muted);">Version 2.0 | Reproductor Web Profesional</p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="about-footer">
+        <p>HFI Music Player - Reproductor de audio de codigo abierto</p>
+        <p style="font-size: 11px; margin-top: 8px;">Soporta MP3, FLAC, WAV, M4A, OGG | Compatible con Linux, Windows 10 y Windows 11 en Chrome y Edge</p>
+    </footer>
+</div>
+
+<script src="theme.js"></script>
+</body>
+</html>
