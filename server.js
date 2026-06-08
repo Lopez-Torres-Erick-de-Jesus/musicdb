@@ -284,9 +284,9 @@ const songSchema = new mongoose.Schema({
     },
 
     audioUrl: {
-        type: String,
-        required: true
-    },
+    type: String,
+    default: ""
+   },
 
     portadaUrl: {
         type: String,
