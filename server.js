@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 
 const multer = require("multer");
-const cloudinary = require("./cloudinary");
+const cloudinary = require("cloudinary").v2;
 
 const app = express();
 
@@ -21,49 +21,15 @@ app.use("/covers", express.static(__dirname + "/covers"));
 
 app.use(express.static(__dirname));
 
-app.post("/upload-song", upload.single("audio"), async (req, res) => {
-
-  try {
-
-    if (!req.file) {
-      return res.status(400).json({
-        error: "No se recibió archivo"
-      });
-    }
-
-    const result = await new Promise((resolve, reject) => {
-
-      cloudinary.uploader.upload_stream(
-        {
-          resource_type: "auto",
-          folder: "music-player"
-        },
-        (error, result) => {
-
-          if (error) reject(error);
-          else resolve(result);
-
-        }
-      ).end(req.file.buffer);
-
-    });
-
-    res.json({
-      ok: true,
-      url: result.secure_url
-    });
-
-  } catch (err) {
-
-    console.error(err);
-
-    res.status(500).json({
-      error: err.message
-    });
-
-  }
-
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
 });
+
+console.log("CLOUD NAME:", process.env.CLOUDINARY_CLOUD_NAME);
+console.log("API KEY:", process.env.CLOUDINARY_API_KEY);
+console.log("SECRET EXISTE:", !!process.env.CLOUDINARY_API_SECRET);
 
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('MongoDB connected'))
