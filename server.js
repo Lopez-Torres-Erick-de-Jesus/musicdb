@@ -4,7 +4,14 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 
+const multer = require("multer");
+const cloudinary = require("./cloudinary");
+
 const app = express();
+
+const upload = multer({
+  storage: multer.memoryStorage()
+});
 
 app.use(cors());
 app.use(express.json());
@@ -13,6 +20,50 @@ app.use("/music", express.static(__dirname + "/music"));
 app.use("/covers", express.static(__dirname + "/covers"));
 
 app.use(express.static(__dirname));
+
+app.post("/upload-song", upload.single("audio"), async (req, res) => {
+
+  try {
+
+    if (!req.file) {
+      return res.status(400).json({
+        error: "No se recibió archivo"
+      });
+    }
+
+    const result = await new Promise((resolve, reject) => {
+
+      cloudinary.uploader.upload_stream(
+        {
+          resource_type: "auto",
+          folder: "music-player"
+        },
+        (error, result) => {
+
+          if (error) reject(error);
+          else resolve(result);
+
+        }
+      ).end(req.file.buffer);
+
+    });
+
+    res.json({
+      ok: true,
+      url: result.secure_url
+    });
+
+  } catch (err) {
+
+    console.error(err);
+
+    res.status(500).json({
+      error: err.message
+    });
+
+  }
+
+});
 
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('MongoDB connected'))
@@ -329,25 +380,28 @@ const userSchema = new mongoose.Schema({
 const User = mongoose.model("User", userSchema);
 
 app.post("/songs", async (req, res) => {
+  try {
 
-    try {
+    console.log("BODY RECIBIDO:");
+    console.log(req.body);
 
-        const song = new Song(req.body);
+    const song = new Song(req.body);
 
-        await song.save();
+    await song.save();
 
-        res.json({
-            ok: true
-        });
+    console.log("SONG GUARDADA");
 
-    } catch(err) {
+    res.json({ ok: true });
 
-        console.log(err);
+  } catch (err) {
 
-        res.status(500).json({
-            error: err.message
-        });
-    }
+    console.log("ERROR:");
+    console.log(err);
+
+    res.status(500).json({
+      error: err.message
+    });
+  }
 });
 
 //enpoints//

@@ -33,6 +33,8 @@ async function scanDir(dir, album = dir.name) {
     if (entry.kind === "file") {
       if (/folder\.jpg|cover\.jpg|album\.jpg|artwork\.jpg/i.test(entry.name)) {
         const file = await entry.getFile();
+        const formData = new FormData();
+        formData.append("audio", file);
         cover = URL.createObjectURL(file);
         const songData = {
           id: songData.id,
@@ -67,20 +69,17 @@ async function scanDir(dir, album = dir.name) {
         try {
           const response = await fetch("/songs", {
             method: "POST",
-
             headers: {
               "Content-Type": "application/json",
             },
-
             body: JSON.stringify(songData),
           });
 
+          console.log("STATUS:", response.status);
+
           const result = await response.json();
 
-          console.log(songs);
-
-          console.log("SONG GUARDADA:");
-          console.log(result);
+          console.log("RESULT:", result);
         } catch (err) {
           console.error("ERROR GUARDANDO SONG:");
           console.error(err);
@@ -109,52 +108,37 @@ async function scanDir(dir, album = dir.name) {
 }
 
 async function cargarCancionesMongo() {
+  try {
+    const response = await fetch("/songs");
 
-    try {
+    const songs = await response.json();
 
-        const response = await fetch(
-            "/songs"
-        );
+    console.log(songs);
 
-        const songs = await response.json();
+    TRACKS = songs.map((song) => ({
+      id: song.id,
+      titulo: song.titulo,
+      album: song.album,
+      artista: song.artista,
+      portada: song.portada || null,
 
-        console.log(songs);
+      archivoRaw: null,
 
-        TRACKS = songs.map(song => ({
-            id: song.id,
-            titulo: song.titulo,
-            album: song.album,
-            artista: song.artista,
-            portada: song.portada || null,
+      archivoRemoto: song.audioUrl,
+    }));
 
-            archivoRaw: null,
+    console.log(TRACKS);
 
-            archivoRemoto: song.audioUrl
+    CURRENT_LIST = [...TRACKS];
 
-        }));
+    renderTracks();
 
-        console.log(TRACKS);
+    showToast(`${TRACKS.length} canciones cargadas desde MongoDB`, "info");
+  } catch (err) {
+    console.error(err);
 
-        CURRENT_LIST = [...TRACKS];
-
-        renderTracks();
-
-        showToast(
-            `${TRACKS.length} canciones cargadas desde MongoDB`,
-            "info"
-        );
-
-    } catch(err) {
-
-        console.error(err);
-
-        showToast(
-            "Error cargando canciones desde MongoDB",
-            "error"
-        );
-
-    }
-
+    showToast("Error cargando canciones desde MongoDB", "error");
+  }
 }
 
 // =========================
@@ -328,41 +312,30 @@ function escapeHtml(str) {
   });
 }
 
-
 // =========================
 // RECOMENDATION
 // =========================
 
+async function registrarReproduccion(songId) {
+  console.log("SONG ID:", songId);
 
-async function registrarReproduccion(songId){
+  try {
+    const response = await fetch("/history", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        user_id: "demo",
+        song_id: songId,
+        origen: "biblioteca",
+      }),
+    });
 
-    console.log("SONG ID:", songId);
+    const data = await response.json();
 
-    try{
-
-        const response = await fetch(
-            "/history",
-            {
-                method:"POST",
-                headers:{
-                    "Content-Type":"application/json"
-                },
-                body: JSON.stringify({
-                    user_id:"demo",
-                    song_id:songId,
-                    origen:"biblioteca"
-                })
-            }
-        );
-
-        const data = await response.json();
-
-        console.log("RESPUESTA:", data);
-
-    }catch(err){
-
-        console.error(err);
-
-    }
-
+    console.log("RESPUESTA:", data);
+  } catch (err) {
+    console.error(err);
+  }
 }
