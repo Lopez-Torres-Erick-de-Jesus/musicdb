@@ -39,6 +39,50 @@ mongoose.connect(process.env.MONGO_URI)
 
 const PORT = process.env.PORT || 3000;
 
+app.post("/upload-song", upload.single("audio"), async (req, res) => {
+
+  try {
+
+    if (!req.file) {
+      return res.status(400).json({
+        error: "No se recibió archivo"
+      });
+    }
+
+    const result = await new Promise((resolve, reject) => {
+
+      cloudinary.uploader.upload_stream(
+        {
+          resource_type: "auto",
+          folder: "music-player"
+        },
+        (error, result) => {
+
+          if (error) reject(error);
+          else resolve(result);
+
+        }
+      ).end(req.file.buffer);
+
+    });
+
+    res.json({
+      ok: true,
+      url: result.secure_url
+    });
+
+  } catch (err) {
+
+    console.error(err);
+
+    res.status(500).json({
+      error: err.message
+    });
+
+  }
+
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
