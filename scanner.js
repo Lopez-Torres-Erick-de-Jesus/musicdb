@@ -42,7 +42,7 @@ async function scanDir(dir, album = dir.name) {
           album: album,
         };
 
-        await fetch("http://localhost:3000/songs", {
+        await fetch("/songs", {
           method: "POST",
 
           headers: {
@@ -65,7 +65,7 @@ async function scanDir(dir, album = dir.name) {
         };
 
         try {
-          const response = await fetch("http://localhost:3000/songs", {
+          const response = await fetch("/songs", {
             method: "POST",
 
             headers: {
@@ -113,7 +113,7 @@ async function cargarCancionesMongo() {
     try {
 
         const response = await fetch(
-            "http://localhost:3000/songs"
+            "/songs"
         );
 
         const songs = await response.json();
@@ -168,7 +168,7 @@ async function guardarPlaylists(data) {
   localStorage.setItem("playlists", JSON.stringify(data));
 
   try {
-    const response = await fetch("http://localhost:3000/playlists", {
+    const response = await fetch("/playlists", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -341,7 +341,7 @@ async function registrarReproduccion(songId){
     try{
 
         const response = await fetch(
-            "http://localhost:3000/history",
+            "/history",
             {
                 method:"POST",
                 headers:{
