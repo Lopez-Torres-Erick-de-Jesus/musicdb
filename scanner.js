@@ -26,85 +26,120 @@ async function cargarCarpeta() {
 }
 
 async function scanDir(dir, album = dir.name) {
+
   let cover = null;
   let localTracks = [];
 
   for await (const entry of dir.values()) {
+
     if (entry.kind === "file") {
+
+      // ===== PORTADA =====
       if (/folder\.jpg|cover\.jpg|album\.jpg|artwork\.jpg/i.test(entry.name)) {
+
         const file = await entry.getFile();
-        const formData = new FormData();
-        formData.append("audio", file);
+
         cover = URL.createObjectURL(file);
-        const songData = {
-          id: songData.id,
 
-          titulo: songData.titulo,
-
-          album: album,
-        };
-
-        await fetch("/songs", {
-          method: "POST",
-
-          headers: {
-            "Content-Type": "application/json",
-          },
-
-          body: JSON.stringify(songData),
-        });
       }
 
+      // ===== CANCIONES =====
       if (/\.(mp3|flac|wav|m4a|ogg)$/i.test(entry.name)) {
+
         const file = await entry.getFile();
 
-        const songData = {
-          id: crypto.randomUUID(),
-
-          titulo: entry.name.replace(/\.[^/.]+$/, ""),
-
-          album: album,
-        };
-
         try {
-          const response = await fetch("/songs", {
+
+          // SUBIR A CLOUDINARY
+
+          const formData = new FormData();
+
+          formData.append("audio", file);
+
+          const uploadResponse = await fetch("/upload-song", {
             method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(songData),
+            body: formData
           });
 
-          console.log("STATUS:", response.status);
+          const uploadResult = await uploadResponse.json();
+
+          console.log("UPLOAD RESPONSE:", uploadResponse.status);
+          console.log("UPLOAD RESULT:", uploadResult);
+
+          // CREAR DATOS DE LA CANCIÓN
+
+          const songData = {
+
+            id: crypto.randomUUID(),
+
+            titulo: entry.name.replace(/\.[^/.]+$/, ""),
+
+            album: album,
+
+            audioUrl: uploadResult.url
+
+          };
+
+          console.log("SONG DATA:", songData);
+
+          // GUARDAR EN MONGODB
+
+          const response = await fetch("/songs", {
+
+            method: "POST",
+
+            headers: {
+              "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify(songData)
+
+          });
 
           const result = await response.json();
 
-          console.log("RESULT:", result);
+          console.log("SONG SAVE STATUS:", response.status);
+          console.log("SONG SAVED:", result);
+
+          // GUARDAR LOCALMENTE PARA LA UI
+
+          localTracks.push({
+
+            id: songData.id,
+
+            titulo: songData.titulo,
+
+            album: songData.album,
+
+            archivoRaw: file,
+
+            portada: null
+
+          });
+
         } catch (err) {
-          console.error("ERROR GUARDANDO SONG:");
+
+          console.error("ERROR SUBIENDO O GUARDANDO:");
           console.error(err);
+
         }
 
-        localTracks.push({
-          id: songData.id,
-
-          titulo: songData.titulo,
-
-          album: songData.album,
-
-          archivoRaw: file,
-
-          portada: null,
-        });
       }
+
     } else if (entry.kind === "directory") {
+
       await scanDir(entry, entry.name);
+
     }
+
   }
 
-  localTracks.forEach((t) => (t.portada = cover));
+  localTracks.forEach(track => {
+    track.portada = cover;
+  });
 
   TRACKS.push(...localTracks);
+
 }
 
 async function cargarCancionesMongo() {
